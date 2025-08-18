@@ -2,8 +2,6 @@ name: Deploy React App
 
 on:
   push:
-    branches: ["main"] # Deploy when pushing to main
-  pull_request:
     branches: ["main"]
 
 jobs:
@@ -17,17 +15,19 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20 # you can use 18 or 22 too
+          node-version: 20
           cache: "npm"
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Build React App
+      - name: Build React App with PUBLIC_URL
         run: npm run build
+        env:
+          PUBLIC_URL: /royalshaven
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          publish_dir: ./dist   # 👈 important change
